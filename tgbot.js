@@ -3,15 +3,16 @@ const TelegramBot = require('node-telegram-bot-api');
 const { sa, getWalletName } = require('./utils/smartAddress');
 const { getTokenPrice, getV3TokenPrice } = require('./utils/price');
 const { getTokenSymbol } = require('./utils/token');
+require('dotenv').config();
 
 // 使用你的 bot token
-const token = '7940412401:AAHTg443PceeL593oz07IhAxZK0gqETguFM';
+const token = process.env.TOKEN;
 
 // 创建 bot 实例
 const bot = new TelegramBot(token, { polling: true });
 
 // 定义目标聊天 ID（你可以设置为特定的聊天组或频道）
-const CHAT_ID = '-1002379529813';  // 你需要替换为实际的聊天 ID
+const CHAT_ID = process.env.CHAT_ID;  // 你需要替换为实际的聊天 ID
 
 // 美化消息格式
 // 格式化消息

@@ -1,4 +1,6 @@
-const wsUrl = "https://rpc.ankr.com/bsc/852ad8c57585f13ef4963f4b9a5dbd860ec7da39d9b4d1bc408176658c61a7fa";
+require('dotenv').config();
+
+const wsUrl = process.env.WS_URL;
 const KNOWN_TOKENS = {
     "0x55d398326f99059fF775485246999027B3197955": "USDT",
     "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c": "BNB",
