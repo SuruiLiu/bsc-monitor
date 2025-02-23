@@ -1,13 +1,13 @@
 const { WebSocketProvider, ethers } = require("ethers");
-const { wsUrl, KNOWN_TOKENS } = require('./utils/config');
-const { parseV2Transaction, parseV3Transaction } = require('./utils/transaction');
-const { pancake } = require('./utils/pancake');
-const { sa } = require('./utils/smartAddress');
-const { getTokenSymbol } = require('./utils/token');
-const { analysis } = require('./utils/analysis');
-const { formatBNBValue } = require('./utils/bnbvalue');
+const { wsUrl, KNOWN_TOKENS } = require('../utils/config');
+const { parseV2Transaction, parseV3Transaction } = require('../utils/transaction');
+const { pancake } = require('../utils/pancake');
+const { sa } = require('../utils/smartAddress');
+const { getTokenSymbol } = require('../utils/token');
+const { analysis } = require('../utils/analysis');
+const { formatBNBValue } = require('../utils/bnbvalue');
 
-const { sendToTelegram, formatTransactionMessage } = require('./tgbot');
+const { sendToTelegram, formatTransactionMessage } = require('../tgbot');
 
 // 将智能钱包地址转换为小写形式的 Set
 const smartAddresses = new Set(sa.map(addr => addr.toLowerCase()));

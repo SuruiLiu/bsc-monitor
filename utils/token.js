@@ -1,7 +1,15 @@
 const { ethers } = require("ethers");
 const { KNOWN_TOKENS } = require('./config');
+
 const tokenSymbolCache = new Map();
-const ERC20_ABI = ["function symbol() view returns (string)"];
+const tokenDecimalsCache = new Map();
+
+const ERC20_ABI = [
+    "function symbol() view returns (string)",
+    "function decimals() view returns (uint8)"
+];
+
+const WBNB_ADDRESS = "0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c";
 
 async function getTokenSymbol(address, provider) {
     if (KNOWN_TOKENS[address]) {
@@ -23,19 +31,30 @@ async function getTokenSymbol(address, provider) {
 }
 
 async function getTokenDecimals(tokenAddress, provider) {
-    try {
-        // 如果是 WBNB，直接返回 18
-        if (tokenAddress.toLowerCase() === WBNB.toLowerCase()) {
-            return 18;
-        }
+    // 转换为小写进行比较
+    const addressLower = tokenAddress.toLowerCase();
 
-        const abi = ["function decimals() view returns (uint8)"];
-        const contract = new ethers.Contract(tokenAddress, abi, provider);
-        return await contract.decimals();
+    if (addressLower === WBNB_ADDRESS) {
+        return 18;
+    }
+
+    if (tokenDecimalsCache.has(addressLower)) {
+        return tokenDecimalsCache.get(addressLower);
+    }
+
+    try {
+        const contract = new ethers.Contract(tokenAddress, ERC20_ABI, provider);
+        const decimals = await contract.decimals();
+        tokenDecimalsCache.set(addressLower, decimals);
+        return decimals;
     } catch (error) {
-        console.error("获取代币小数位失败:", error);
+        console.error(`获取代币 ${tokenAddress} 小数位失败:`, error.message);
         return 18; // 默认返回 18
     }
 }
 
-module.exports = { getTokenSymbol, getTokenDecimals };
+module.exports = {
+    getTokenSymbol,
+    getTokenDecimals,
+    WBNB_ADDRESS
+};

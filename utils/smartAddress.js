@@ -16,7 +16,8 @@ const smartAddress = [
     "0x4521a15102e89af1795eeda7a78e472210955015",
     "0xba3a3979c8385b176bbc76318753bd2fefa80ac0",
     "0x28816c4c4792467390c90e5b426f198570e29307",        // cz address
-    "0x46a15b0b27311cedf172ab29e4f4766fbe7f4364"         // test
+    "0x29bbc2b5aff41a2143f7d28fe6944453178f1473",         // test
+    "0x056b96ff5e6046b500cc2be5cd8d950d263f963f"          // test
 ];
 
 // 添加地址到名称的映射
@@ -38,7 +39,8 @@ const addressToName = {
     "0x4521a15102e89af1795eeda7a78e472210955015": "聪明钱15",
     "0xba3a3979c8385b176bbc76318753bd2fefa80ac0": "聪明钱16",
     "0x28816c4c4792467390c90e5b426f198570e29307": "CZ赵长安",
-    "0x46a15b0b27311cedf172ab29e4f4766fbe7f4364": "测试钱包"
+    "0x29bbc2b5aff41a2143f7d28fe6944453178f1473": "测试钱包1",
+    "0x056b96ff5e6046b500cc2be5cd8d950d263f963f": "测试钱包2"
 };
 
 export const sa = smartAddress;
