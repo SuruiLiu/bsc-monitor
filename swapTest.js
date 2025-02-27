@@ -1,6 +1,6 @@
 const { WebSocketProvider, ethers } = require("ethers");
 const { wsUrl } = require('./utils/config');
-const { getTokenDecimals } = require('./utils/token');
+const { getTokenDecimals, getTokenSymbol } = require('./utils/token');
 const { sendToTelegram } = require('./tgbot');
 
 let provider;
@@ -60,13 +60,14 @@ async function setupEventListeners() {
                         const transferTo = ethers.getAddress("0x" + otherLog.topics[2].slice(26)).toLowerCase();
                         if (transferTo === userAddress) {
                             // 找到了 gas token -> ERC20 的 swap
-                            const inAmount = ethers.formatUnits(otherLog.data, await getTokenDecimals(otherLog.address, provider));
+                            const inTokenSymbol = await getTokenSymbol(otherLog.address, provider);
+                            const inDecimals = await getTokenDecimals(otherLog.address, provider);
+                            const inAmount = ethers.formatUnits(otherLog.data, inDecimals);
                             const outAmount = ethers.formatEther(tx.value);
 
-                            const message = `Swap detected (Gas Token -> ERC20)!\n` +
+                            const message = `Swap detected!\n` +
                                 `User: ${userAddress}\n` +
-                                `Out: ${outAmount} BNB\n` +
-                                `In: ${inAmount} (${otherLog.address})\n` +
+                                `BNB ${outAmount} -> ${inTokenSymbol} ${inAmount}\n` +
                                 `TX: ${log.transactionHash}`;
 
                             console.log(message);
@@ -90,13 +91,25 @@ async function setupEventListeners() {
                             const withdrawTo = "0x" + otherLog.topics[1].slice(26).toLowerCase();
                             if (withdrawTo === currentFrom) {
                                 // ERC20 -> gas token swap
-                                const outAmount = ethers.formatUnits(log.data, await getTokenDecimals(currentToken, provider));
+                                const outTokenSymbol = await getTokenSymbol(currentToken, provider);
+                                const outDecimals = await getTokenDecimals(currentToken, provider);
+                                const outAmount = ethers.formatUnits(log.data, outDecimals);
                                 const inAmount = ethers.formatEther(otherLog.data);
 
-                                const message = `Swap detected (ERC20 -> Gas Token)!\n` +
+                                // 查找交易中的第一个 Transfer 事件
+                                let firstTransferFrom = currentFrom;
+                                for (const firstLog of txReceipt.logs) {
+                                    if (firstLog.topics && firstLog.topics[0] === TRANSFER_EVENT_SIG) {
+                                        firstTransferFrom = ethers.getAddress("0x" + firstLog.topics[1].slice(26)).toLowerCase();
+                                        break;
+                                    }
+                                }
+
+                                if (firstTransferFrom === currentFrom) currentFrom = firstTransferFrom;
+
+                                const message = `Swap detected!\n` +
                                     `User: ${currentFrom}\n` +
-                                    `Out: ${outAmount} (${currentToken})\n` +
-                                    `In: ${inAmount} BNB\n` +
+                                    `${outTokenSymbol} ${outAmount} -> BNB ${inAmount}\n` +
                                     `TX: ${log.transactionHash}`;
 
                                 console.log(message);
@@ -117,14 +130,17 @@ async function setupEventListeners() {
                             const otherToken = otherLog.address.toLowerCase();
 
                             if (otherTo === currentFrom && currentToken !== otherToken) {
-                                const outAmount = ethers.formatUnits(log.data, await getTokenDecimals(currentToken, provider));
-                                const inAmount = ethers.formatUnits(otherLog.data, await getTokenDecimals(otherToken, provider));
+                                const outTokenSymbol = await getTokenSymbol(currentToken, provider);
+                                const outDecimals = await getTokenDecimals(currentToken, provider);
+                                const outAmount = ethers.formatUnits(log.data, outDecimals);
 
-                                const message = `Swap detected (ERC20 -> ERC20)!\n` +
+                                const inTokenSymbol = await getTokenSymbol(otherToken, provider);
+                                const inDecimals = await getTokenDecimals(otherToken, provider);
+                                const inAmount = ethers.formatUnits(otherLog.data, inDecimals);
+
+                                const message = `Swap detected!\n` +
                                     `User: ${currentFrom}\n` +
-                                    `Router: ${currentTo}\n` +
-                                    `Out: ${outAmount} (${currentToken})\n` +
-                                    `In: ${inAmount} (${otherToken})\n` +
+                                    `${outTokenSymbol} ${outAmount} -> ${inTokenSymbol} ${inAmount}\n` +
                                     `TX: ${log.transactionHash}`;
 
                                 console.log(message);
