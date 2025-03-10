@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const wsUrl = process.env.WS_URL;
+const baseWsUrl = process.env.BASE_WS_URL;
+
 const KNOWN_TOKENS = {
     "0x55d398326f99059fF775485246999027B3197955": "USDT",
     "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c": "BNB",
@@ -23,4 +25,19 @@ const KNOWN_TOKENS = {
     "0x250632378E573c6Be1AC2f97Fcdf00515d0Aa91B": "BETH",
     "0x4B0F1812e5Df2A09796481Ff14017e6005508003": "TWT"
 };
-module.exports = { wsUrl, KNOWN_TOKENS };
+
+// Base链上的已知代币
+const BASE_KNOWN_TOKENS = {
+    "0x4200000000000000000000000000000000000006": "WETH",
+    "0x50c5725949a6f0c72e6c4a641f24049a917db0cb": "DAI",
+    "0x833589fcd6edb6e08f4c7c32d4f71b54bda02913": "USDC",
+    "0xd9aaec86b65d86f6a7b5b1b0c42ffa531710b6ca": "USDbC",
+    "0x2ae3f1ec7f1f5012cfeab0185bfc494a3ce732d8": "cbETH"
+};
+
+module.exports = {
+    wsUrl,
+    baseWsUrl,
+    KNOWN_TOKENS,
+    BASE_KNOWN_TOKENS
+};
