@@ -2,6 +2,7 @@ const { WebSocketProvider, ethers } = require("ethers");
 const { wsUrl } = require('./utils/config');
 const { getTokenDecimals, getTokenSymbol } = require('./utils/token');
 const { sendToTelegram } = require('./tgbot');
+const { sa } = require('./smartAddress');
 
 let provider;
 let isConnected = false;
@@ -52,6 +53,9 @@ async function setupEventListeners() {
                 if (eventSig === DEPOSIT_EVENT_SIG) {
                     // 处理 Deposit 事件
                     userAddress = tx.from.toLowerCase();
+
+                    // if (!sa.includes(userAddress)) return; // 如果不是监听的地址，直接返回
+
                     // 在后续日志中寻找 Transfer
                     for (const otherLog of txReceipt.logs) {
                         if (otherLog.logIndex <= log.logIndex) continue;
@@ -80,6 +84,8 @@ async function setupEventListeners() {
                     const currentFrom = ethers.getAddress("0x" + log.topics[1].slice(26)).toLowerCase();
                     const currentTo = ethers.getAddress("0x" + log.topics[2].slice(26)).toLowerCase();
                     const currentToken = log.address.toLowerCase();
+
+                    // if (!sa.includes(currentFrom)) return; // 如果不是监听的地址，直接返回
 
                     // 先检查是否有后续的 Withdrawal 事件
                     let foundWithdrawal = false;

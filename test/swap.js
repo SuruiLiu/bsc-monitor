@@ -1,7 +1,7 @@
 const { WebSocketProvider, ethers } = require("ethers");
-const { wsUrl } = require('./utils/config');
-const { sa } = require('./utils/smartAddress');
-const { getTokenDecimals } = require('./utils/token');
+const { wsUrl } = require('../utils/config');
+const { sa } = require('../utils/smartAddress');
+const { getTokenDecimals } = require('../utils/token');
 
 let provider;
 let isConnected = false;

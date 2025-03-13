@@ -1,4 +1,4 @@
-const { getTokenSymbol } = require('./token');
+const { getTokenSymbol } = require('../utils/token');
 
 // 工具函数：格式化数值（考虑小数位数）
 function formatAmount(amount, decimals = 18) {

@@ -1,8 +1,8 @@
 const { WebSocketProvider, ethers } = require("ethers");
-const { wsUrl } = require('./utils/config');
-const { sa } = require('./utils/smartAddress');
-const { getTokenDecimals } = require('./utils/token');
-const { sendToTelegram, formatMessage } = require('./tgbot');
+const { wsUrl } = require('../utils/config');
+const { sa } = require('../utils/smartAddress');
+const { getTokenDecimals } = require('../utils/token');
+const { sendToTelegram, formatMessage } = require('../tgbot');
 
 let provider;
 let isConnected = false;

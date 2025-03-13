@@ -1,7 +1,7 @@
 const { Interface } = require("ethers");
-const { getTokenSymbol } = require('./token');
-const { getTokenPrice, recordPair, analyzePriceChange, calculateReturn } = require('./price');
-const { KNOWN_TOKENS } = require('./config');
+const { getTokenSymbol } = require('../utils/token');
+const { getTokenPrice, recordPair, analyzePriceChange, calculateReturn } = require('../utils/price');
+const { KNOWN_TOKENS } = require('../utils/config');
 
 // 解析 V2 交易
 async function parseV2Transaction(tx, decoded, method, provider) {
